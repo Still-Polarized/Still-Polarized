@@ -4,7 +4,7 @@ import os, re, sys, html
 import markdown as md
 
 VAULT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(VAULT, "site")
+OUT = os.path.join(VAULT, "docs")
 os.makedirs(OUT, exist_ok=True)
 
 # slug: lower-case, replace spaces with '-', keep alphanumerics
@@ -17,7 +17,7 @@ def walk(d):
     for entry in os.listdir(d):
         p = os.path.join(d, entry)
         if os.path.isdir(p):
-            if entry in (".build", "site", ".git", "assets"):
+            if entry in (".build", "site", "docs", ".git", "assets"):
                 continue
             walk(p)
         elif entry.endswith(".md"):
