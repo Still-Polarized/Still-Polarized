@@ -140,7 +140,13 @@ document.querySelectorAll('nav a').forEach(a => { if (a.getAttribute('href').end
     assets_src = os.path.join(VAULT, "assets")
     if os.path.isdir(assets_src):
         shutil.copytree(assets_src, os.path.join(OUT, "assets"), dirs_exist_ok=True)
-        print("Copied assets/ -> site/assets/")
+        print("Copied assets/ -> docs/assets/")
+
+    # GitHub Pages: this is a pre-built static site, so skip Jekyll entirely.
+    # Without it, Jekyll tries to render .scss and the build fails.
+    with open(os.path.join(OUT, ".nojekyll"), "w", encoding="utf-8") as f:
+        f.write("")
+    print("Wrote docs/.nojekyll (disables Jekyll on GitHub Pages)")
 
     # count broken links
     broken = 0
