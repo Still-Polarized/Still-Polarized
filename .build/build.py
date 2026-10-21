@@ -24,12 +24,14 @@ def walk(d):
             pages[os.path.basename(entry)[:-3]] = (p, os.path.dirname(p))
 walk(VAULT)
 
-# map page name -> relative url
-def page_url(name):
+# map page name -> relative url (depth-aware: links must resolve from the
+# page's own directory, since the site is served from a subfolder of the domain)
+def page_url(name, depth=0):
     src, d = pages[name]
     rel = os.path.relpath(d, VAULT)
     base = "" if rel == "." else rel + "/"
-    return base + slug(name) + ".html"
+    prefix = "../" * depth
+    return prefix + base + slug(name) + ".html"
 
 # find links from a file's own dir (like Obsidian: [[Name]] resolves against vault)
 LINK_RE = re.compile(r"\[\[([^\]|#]+)(?:#[^\]|#]+)?(?:\|[^\]]+)?\]\]")
@@ -56,11 +58,18 @@ def add_fit_buttons(html_str):
         )
     return FIT_RE.sub(repl, html_str)
 
-def convert(body, name):
+def depth_of(d):
+    """How many directory levels d is below the vault root (0 for root)."""
+    rel = os.path.relpath(d, VAULT)
+    if rel in (".", ""):
+        return 0
+    return len([p for p in rel.split(os.sep) if p and p != "."])
+
+def convert(body, name, depth=0):
     def repl(m):
         target = m.group(1).strip()
         if target in pages:
-            return f'<a class="wiki" href="{page_url(target)}">{html.escape(target)}</a>'
+            return f'<a class="wiki" href="{page_url(target, depth)}">{html.escape(target)}</a>'
         return f'<span class="wikibroken" title="Missing page">{html.escape(m.group(0))}</span>'
     body = LINK_RE.sub(repl, body)
     out = md.markdown(body, extensions=["tables", "fenced_code", "sane_lists", "toc"])
@@ -140,14 +149,18 @@ def build():
         group = rel if rel != "." else "Home"
         tree.setdefault(group, []).append(name)
 
-    nav_html = ['<h1>Still Polarized</h1>', '<h2>Wormhole Corp · Low Sec</h2>']
-    nav_html.append('<div class="search"><input id="q" type="text" placeholder="Filter pages…" oninput="filterNav(this.value)"></div>')
-    for group, names in tree.items():
-        nav_html.append(f'<div class="group"><div class="title">{html.escape(group)}</div>')
-        for n in names:
-            nav_html.append(f'<a data-name="{html.escape(n.lower())}" href="{page_url(n)}">{html.escape(n)}</a>')
-        nav_html.append('</div>')
-    nav_html.append("""
+    for name, (src, d) in pages.items():
+        depth = depth_of(d)
+        body = open(src, encoding="utf-8").read()
+        # Rebuild the sidebar for THIS page's depth so its links resolve too.
+        nav_html = ['<h1>Still Polarized</h1>', '<h2>Wormhole Corp · Low Sec</h2>']
+        nav_html.append('<div class="search"><input id="q" type="text" placeholder="Filter pages…" oninput="filterNav(this.value)"></div>')
+        for group, names in tree.items():
+            nav_html.append(f'<div class="group"><div class="title">{html.escape(group)}</div>')
+            for n in names:
+                nav_html.append(f'<a data-name="{html.escape(n.lower())}" href="{page_url(n, depth)}">{html.escape(n)}</a>')
+            nav_html.append('</div>')
+        nav_html.append("""
 <script>
 function filterNav(q) {
   q = q.toLowerCase();
@@ -158,10 +171,7 @@ function filterNav(q) {
 const here = location.pathname.split('/').pop() || 'Home.html';
 document.querySelectorAll('nav a').forEach(a => { if (a.getAttribute('href').endsWith(here)) a.classList.add('active'); });
 </script>""")
-
-    for name, (src, d) in pages.items():
-        body = open(src, encoding="utf-8").read()
-        content = convert(body, name)
+        content = convert(body, name, depth)
         page = f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{html.escape(name)} — Still Polarized</title><style>{CSS}</style></head>
