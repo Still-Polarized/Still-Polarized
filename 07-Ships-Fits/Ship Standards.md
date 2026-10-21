@@ -16,4 +16,4 @@ What you're expected to be able to run, per activity. **No hard TQ minimum** —
 - [ ] Standard PvP loadout beyond Cov-ops
 - [ ] Logistics / hauler standard for the [[Logistics Hub]]
 
-Fits: see [[Fits Index]].
+Fits: see [[Fits Index]]. Doctrines per activity: see [[Ship Doctrines]].

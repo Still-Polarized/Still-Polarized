@@ -34,6 +34,28 @@ def page_url(name):
 # find links from a file's own dir (like Obsidian: [[Name]] resolves against vault)
 LINK_RE = re.compile(r"\[\[([^\]|#]+)(?:#[^\]|#]+)?(?:\|[^\]]+)?\]\]")
 
+# EVE fit blocks: ```fit ... ```  ->  <pre><code class="language-fit">...</code></pre>
+FIT_RE = re.compile(r'<pre><code class="(?:language-)?fit">(.*?)</code></pre>', re.DOTALL)
+def add_fit_buttons(html_str):
+    """Wrap each EVE fit code block in a .fit card with a copy-to-clipboard button."""
+    def repl(m):
+        content = m.group(1)
+        first_line = content.split("\n", 1)[0]
+        label = html.unescape(first_line).strip()
+        if label.startswith("[") and "," in label:
+            inner = label.strip("[]")
+            parts = inner.split(",", 1)
+            ship = parts[0].strip()
+            fitn = parts[1].strip() if len(parts) > 1 else ""
+            label = ship + (" — " + fitn if fitn else "")
+        return (
+            f'<div class="fit"><div class="fitbar"><span class="fitlabel">'
+            f'{html.escape(label)}</span>'
+            f'<button class="copybtn" type="button" onclick="copyFit(this)">Copy</button>'
+            f'</div><pre><code class="language-fit">{content}</code></pre></div>'
+        )
+    return FIT_RE.sub(repl, html_str)
+
 def convert(body, name):
     def repl(m):
         target = m.group(1).strip()
@@ -41,7 +63,8 @@ def convert(body, name):
             return f'<a class="wiki" href="{page_url(target)}">{html.escape(target)}</a>'
         return f'<span class="wikibroken" title="Missing page">{html.escape(m.group(0))}</span>'
     body = LINK_RE.sub(repl, body)
-    return md.markdown(body, extensions=["tables", "fenced_code", "sane_lists", "toc"])
+    out = md.markdown(body, extensions=["tables", "fenced_code", "sane_lists", "toc"])
+    return add_fit_buttons(out)
 
 CSS = """
 :root {
@@ -70,9 +93,42 @@ pre { background: #141417; padding: 12px; border-radius: 8px; overflow-x: auto; 
 pre code { background: none; padding: 0; }
 img { max-width: 100%; }
 hr { border: none; border-top: 1px solid var(--line); }
+.fit { margin: 16px 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.fitbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #202024; padding: 7px 12px; }
+.fitlabel { color: var(--orange); font-size: .85rem; font-weight: 600; }
+.copybtn { background: var(--orange); color: #111; border: none; padding: 4px 12px; border-radius: 5px; font-size: .75rem; font-weight: 700; cursor: pointer; }
+.copybtn:hover { background: #ff8a3d; }
+.copybtn:active { transform: translateY(1px); }
+.copybtn.copied { background: #2f9e6f; color: #fff; }
+.fit pre { margin: 0; border-top: 1px solid var(--line); }
 .search { margin: 10px 0 18px; }
 .search input { width: 100%; padding: 8px 10px; background: #141417; border: 1px solid var(--line); border-radius: 6px; color: var(--text); font-size: .85rem; }
 @media (max-width: 800px) { body { grid-template-columns: 1fr; } nav { position: static; height: auto; } }
+"""
+
+COPYJS = """
+function copyFit(btn) {
+  var fit = btn.closest('.fit');
+  var code = fit.querySelector('pre code');
+  var text = code.textContent;
+  function done(ok) {
+    btn.textContent = ok ? 'Copied!' : 'Error';
+    btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1400);
+  }
+  function fallback() {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand('copy'); done(true); } catch(e) { done(false); }
+    document.body.removeChild(ta);
+  }
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(function(){ done(true); }, fallback);
+  } else {
+    fallback();
+  }
+}
 """
 
 def build():
@@ -113,7 +169,7 @@ document.querySelectorAll('nav a').forEach(a => { if (a.getAttribute('href').end
 <aside><nav>{''.join(nav_html)}</nav></aside>
 <main><article>{content}</article>
 <footer style="margin-top:40px;color:var(--muted);font-size:.75rem">Still Polarized — Wormhole Corp · Low Sec. Tag <strong style="color:var(--orange)">STLPO</strong>. Home base: Bayuka (Sazdih, Derelik), 0.4 lowsec.</footer>
-</main></body></html>"""
+</main><script>{COPYJS}</script></body></html>"""
         url = page_url(name)
         target = os.path.join(OUT, url)
         os.makedirs(os.path.dirname(target), exist_ok=True)
