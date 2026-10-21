@@ -7,17 +7,17 @@
 ## Start Here
 
 - **New here?** → [[Recruiting]] and [[Code of Conduct]]
-- **Where we live** → [[Bayuka (HQ)]] · [[Logistics Hub]]
+- **Where we live** → [[Bayuka (HQ)]]
 - **What we do** → [[Ops Overview]]
 - **Money** → [[Earnings & Distribution]]
 
 ## The Corp
 
-- [[Corp Overview]] · [[Leadership]] · [[Member Roster]] · [[Corp History]]
+- [[Corp Overview]] · [[Leadership]] · [[Member Roster]]
 
 ## Home Base
 
-- [[Bayuka (HQ)]] · [[Logistics Hub]]
+- [[Bayuka (HQ)]]
 
 ## Operations
 
@@ -38,7 +38,7 @@
 
 ## Comms
 
-- [[Channels]] · [[Comms Etiquette]]
+- [[Comms Etiquette]]
 
 ## Brand
 

@@ -14,6 +14,6 @@ What you're expected to be able to run, per activity. **No hard TQ minimum** —
 
 - [ ] Exact T3 cruiser preference (which class)
 - [ ] Standard PvP loadout beyond Cov-ops
-- [ ] Logistics / hauler standard for the [[Logistics Hub]]
+- [ ] Logistics / hauler standard
 
 Fits: see [[Fits Index]]. Doctrines per activity: see [[Ship Doctrines]].

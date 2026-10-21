@@ -20,10 +20,3 @@ Our home system. Everything starts and ends here.
 
 - Stable lowsec home with a proper station (market, freeport)
 - Gateway to our wormhole hunting grounds
-- TBC — add local lore, known gangs, PvP hotspots, travel routes
-
-## Local intel (running notes)
-
-- **Who's active / what gangs run the system:** TBC
-- **Safe travel routes to nearby WH systems:** TBC
-- **Mining / huffing spots:** see [[Mining]] and [[Huffing]]

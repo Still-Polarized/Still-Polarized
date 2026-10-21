@@ -12,6 +12,6 @@
 
 ## TBC
 
-- [ ] Fab locations (which moons / systems — see [[Logistics Hub]])
+- [ ] Fab locations (which moons / systems)
 - [ ] Drone types we produce
 - [ ] Haul plan

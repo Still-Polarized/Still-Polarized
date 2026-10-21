@@ -5,6 +5,10 @@ import markdown as md
 
 VAULT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(VAULT, "docs")
+# clean rebuild: remove previous output so deleted pages don't linger in docs/
+import shutil
+if os.path.isdir(OUT):
+    shutil.rmtree(OUT)
 os.makedirs(OUT, exist_ok=True)
 
 # slug: lower-case, replace spaces with '-', keep alphanumerics

@@ -5,6 +5,7 @@
 | **Name** | Still Polarized |
 | **Tag** | [STLPO] |
 | **Corp ID** | TBC (fill in once created) |
+| **Founded** | 15/10/26 |
 | **Focus** | Wormhole exploration & lowsec ops |
 | **Main area of operation** | Wormhole space (primary); home region: Derelik |
 | **Home system** | [[Bayuka (HQ)]] |
@@ -33,4 +34,3 @@
 ## TBC
 
 - [ ] Corp ID
-- [ ] Official recruitment channel (see [[Recruiting]])

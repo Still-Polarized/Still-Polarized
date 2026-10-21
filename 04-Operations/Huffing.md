@@ -18,4 +18,4 @@ Huffing in home lowsec (Bayuka and nearby systems) — typically when there's no
 
 - [ ] Regular huffing routes / systems
 - [ ] Fleet size standard
-- [ ] Haul plan (who brings loot back to the [[Logistics Hub]])
+- [ ] Haul plan (who brings loot back to HQ)

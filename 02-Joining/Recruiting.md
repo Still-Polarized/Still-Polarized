@@ -20,4 +20,9 @@
 
 ## How to apply
 
-- TBC (recruitment channel: Discord invite / in-game recruitment thread)
+We recruit via open recruitment posts:
+
+- **EVE Forums:** <https://forums.eveonline.com/t/still-polarized-the-worst-wormhole-corp-youll-ever-hear-of/520422>
+- **Reddit (r/evejobs):** <https://www.reddit.com/r/evejobs/comments/1x8mijs/still_polarized_the_worst_wormholers_you_will/>
+
+Apply through either post, then follow the process above.

@@ -17,4 +17,4 @@ Mining in home lowsec (Bayuka and nearby systems) — typically when there's no 
 ## TBC
 
 - [ ] Regular mining spots / systems
-- [ ] Haul plan (who brings minerals back to the [[Logistics Hub]])
+- [ ] Haul plan (who brings minerals back to HQ)
